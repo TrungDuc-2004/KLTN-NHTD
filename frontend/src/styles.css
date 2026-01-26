@@ -1,0 +1,150 @@
+* { box-sizing: border-box; }
+
+:root {
+  --bg: #0b1020;
+  --card: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.12);
+  --text: #e8ecff;
+  --muted: rgba(232,236,255,0.7);
+  --blue: #3b82f6;
+  --green: #22c55e;
+  --red: #ef4444;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  width: min(820px, 92vw);
+  margin: 44px auto;
+  padding: 24px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 24px;
+}
+
+.sub {
+  margin: 0 0 20px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .grid2 { grid-template-columns: 1fr; }
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  color: rgba(232,236,255,0.9);
+}
+
+input, select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.25);
+  color: var(--text);
+  outline: none;
+}
+
+button {
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  background: var(--blue);
+  color: white;
+  font-weight: 700;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.progressWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progressBar {
+  flex: 1;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  width: 0%;
+  background: var(--green);
+  transition: width 120ms ease;
+}
+
+.progressText {
+  width: 56px;
+  text-align: right;
+  font-size: 13px;
+  color: rgba(232,236,255,0.8);
+}
+
+/* Toast */
+.toastContainer {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  display: grid;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.toast {
+  min-width: 280px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: toastIn 160ms ease-out;
+}
+
+.toast.success { border-color: rgba(34,197,94,0.55); }
+.toast.error   { border-color: rgba(239,68,68,0.55); }
+
+@keyframes toastIn {
+  from { transform: translateY(-6px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+}
