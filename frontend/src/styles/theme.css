@@ -1,0 +1,18 @@
+:root{
+  --brand-blue: #124874;
+  --brand-red:  #CF373D;
+
+  --bg: #0b1b2a;
+  --card: rgba(255,255,255,0.92);
+  --text: #0e1a24;
+  --muted: rgba(14,26,36,0.65);
+  --ring: rgba(18,72,116,0.35);
+}
+
+*{ box-sizing: border-box; }
+html, body{ height: 100%; }
+body{
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  background: var(--bg);
+}
