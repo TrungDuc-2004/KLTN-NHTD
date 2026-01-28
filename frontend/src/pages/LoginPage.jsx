@@ -30,6 +30,7 @@ export default function LoginPage() {
     try {
       const data = await login(form.username, form.password);
       setMsg({ type: "success", text: `Đăng nhập thành công (${data.role}).` });
+      setTimeout(() => nav("/documents"), 450);
       setTimeout(() => nav("/upload"), 450);
     } catch (err) {
       setMsg({ type: "error", text: err?.message || "Đăng nhập thất bại." });
