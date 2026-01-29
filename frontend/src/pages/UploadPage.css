@@ -73,11 +73,25 @@
   color: rgba(14,26,36,0.75);
 }
 
-.up-field input, .up-field select{
+.up-field input, .up-field select, .up-field textarea{
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid rgba(0,0,0,0.12);
   outline: none;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.up-textarea{
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.35;
+}
+
+.up-help{
+  margin-top: 2px;
+  font-size: 12px;
+  color: rgba(14,26,36,0.62);
 }
 
 .up-btn{
@@ -101,6 +115,7 @@
   background: rgba(0,0,0,0.04);
   border: 1px solid rgba(0,0,0,0.06);
   font-size: 13px;
+  word-break: break-word;
 }
 
 .up-progressWrap{

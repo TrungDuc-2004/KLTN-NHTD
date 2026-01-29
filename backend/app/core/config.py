@@ -1,8 +1,10 @@
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
-# Load .env nếu có
-load_dotenv()
+# ✅ luôn load .env trong thư mục backend (ổn định dù chạy uvicorn ở đâu)
+BACKEND_DIR = Path(__file__).resolve().parents[2]  # .../backend
+load_dotenv(BACKEND_DIR / ".env")
 
 def _to_bool(v: str, default: bool=False) -> bool:
     if v is None:
@@ -28,12 +30,17 @@ ALLOWED_EXTS = [e.strip().lower() for e in (os.getenv("ALLOWED_EXTS", "pdf,txt,p
 PART_SIZE_MB = int(os.getenv("PART_SIZE_MB", "10"))
 PART_SIZE_BYTES = PART_SIZE_MB * 1024 * 1024
 
-# ===== PostgreSQL (Auth/Login) =====
+# ===== PostgreSQL =====
 PG_HOST = os.getenv("PG_HOST", "localhost")
 PG_PORT = int(os.getenv("PG_PORT", "5432"))
 PG_DB = os.getenv("PG_DB", "Data")
 PG_USER = os.getenv("PG_USER", "postgres")
 PG_PASSWORD = os.getenv("PG_PASSWORD", "")
+
+# ===== MongoDB =====
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
+MONGO_DB = os.getenv("MONGO_DB", "kltn")
+MONGO_COLLECTION = os.getenv("MONGO_COLLECTION", "minio_files")
 
 # ===== JWT =====
 JWT_SECRET = os.getenv("JWT_SECRET", "change_me")
@@ -43,4 +50,3 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "120"
 # ===== CORS =====
 _CORS_RAW = os.getenv("CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
 CORS_ORIGINS = [x.strip() for x in _CORS_RAW.split(",") if x.strip()] or ["*"]
-
