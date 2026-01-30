@@ -4,6 +4,8 @@ import LoginPage from "./pages/LoginPage.jsx";
 import UploadPage from "./pages/UploadPage.jsx";
 import DocumentsPage from "./pages/DocumentsPage.jsx";
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import DocumentDetailPage from "./pages/DocumentDetailPage.jsx";
+
 
 export default function App() {
   return (
@@ -17,6 +19,14 @@ export default function App() {
             <DocumentsPage />
           </ProtectedRoute>
         }
+      />
+      <Route
+        path="/documents/:id"
+        element={
+         <ProtectedRoute allowRoles={["admin"]}>
+          <DocumentDetailPage />
+         </ProtectedRoute>
+      }
       />
 
       <Route

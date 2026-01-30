@@ -4,10 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import { listDocuments } from "../services/documentService.js";
 import "./DocumentsPage.css";
 
-const CLASS_TABS = ["all", "10", "11", "12"];
-
+const CLASS_TABS = ["10", "11", "12"];
 const TYPE_OPTIONS = [
-  { value: "all", label: "all (tất cả)" },
   { value: "subject", label: "subject (môn)" },
   { value: "topic", label: "topic (chủ đề)" },
   { value: "lesson", label: "lesson (bài)" },
@@ -43,8 +41,8 @@ export default function DocumentsPage() {
   const { role, fullName, logout } = useAuth();
   const nav = useNavigate();
 
-  const [classId, setClassId] = useState("all");
-  const [typeName, setTypeName] = useState("all");
+  const [classId, setClassId] = useState("10");
+  const [typeName, setTypeName] = useState("subject");
   const [q, setQ] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -57,7 +55,6 @@ export default function DocumentsPage() {
 
   useEffect(() => {
     const onDown = (e) => {
-      // nếu đang mở menu và click ra ngoài -> đóng
       if (!menuRef.current) return;
       if (!menuRef.current.contains(e.target)) setOpenMenuId(null);
     };
@@ -74,12 +71,8 @@ export default function DocumentsPage() {
     setErr("");
     setLoading(true);
     try {
-      const res = await listDocuments({
-        classId,
-        typeName,
-        q: q.trim(),
-        limit: 500,
-      });
+      // q: có thể gửi lên BE để filter
+      const res = await listDocuments({ classId, typeName, q: q.trim(), limit: 500 });
       setData(res || { count: 0, items: [] });
     } catch (e) {
       setErr(e?.message || "Lỗi khi lấy danh sách tài liệu.");
@@ -94,12 +87,9 @@ export default function DocumentsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classId, typeName]);
 
-  const items = useMemo(
-    () => (Array.isArray(data?.items) ? data.items : []),
-    [data]
-  );
+  const items = useMemo(() => (Array.isArray(data?.items) ? data.items : []), [data]);
 
-  // FE filter (optional)
+  // nếu muốn FE filter thêm (không bắt buộc)
   const filtered = useMemo(() => {
     const key = q.trim().toLowerCase();
     if (!key) return items;
@@ -115,6 +105,9 @@ export default function DocumentsPage() {
       <header className="dp-topbar">
         <div>
           <div className="dp-title">Danh sách tài liệu</div>
+          <div className="dp-sub">
+            Nguồn: <b>MongoDB</b> • Class: <b>{classId}</b> • Type: <b>{typeName}</b>
+          </div>
         </div>
 
         <div className="dp-user">
@@ -135,7 +128,7 @@ export default function DocumentsPage() {
                 className={`dp-tab ${classId === c ? "active" : ""}`}
                 onClick={() => setClassId(c)}
               >
-                {c === "all" ? "Tất cả" : `Lớp ${c}`}
+                Lớp {c}
               </button>
             ))}
           </div>
@@ -143,13 +136,10 @@ export default function DocumentsPage() {
           <div className="dp-controls">
             <label className="dp-field">
               <span>Danh mục</span>
-              <select
-                value={typeName}
-                onChange={(e) => setTypeName(e.target.value)}
-              >
+              <select value={typeName} onChange={(e) => setTypeName(e.target.value)}>
                 {TYPE_OPTIONS.map((op) => (
                   <option key={op.value} value={op.value}>
-                    {op.label}
+                    {op.value}
                   </option>
                 ))}
               </select>
@@ -176,99 +166,99 @@ export default function DocumentsPage() {
           Hiển thị: <b>{filtered.length}</b> / {data?.count ?? 0}
         </div>
 
-        {/* ✅ wrap mới: dp-tableWrap overflow visible, dp-tableClip giữ bo góc */}
         <div className="dp-tableWrap">
-            <table className="dp-table dp-table--mongo">
-              <thead>
+          <table className="dp-table dp-table--mongo">
+            <thead>
+              <tr>
+                <th>Tên file</th>
+                <th>Type file</th>
+                <th>Size</th>
+                <th>Lần cập nhật cuối</th>
+                <th className="dp-thActions"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
                 <tr>
-                  <th>Tên file</th>
-                  <th>Type file</th>
-                  <th>Size</th>
-                  <th>Lần cập nhật cuối</th>
-                  <th className="dp-thActions"></th>
+                  <td colSpan="5" className="dp-empty">
+                    Đang tải dữ liệu...
+                  </td>
                 </tr>
-              </thead>
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="dp-empty">
+                    Danh sách rỗng.
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((it) => (
+                  <tr
+                    key={it.id}
+                    className="dp-rowClickable"
+                    onClick={() => nav(`/documents/${it.id}?type=${encodeURIComponent(typeName)}`)}
+                    title="Bấm để xem chi tiết"
+                  >
+                    {/* Tên file = name trong Mongo (vd subject_name = Tin) */}
+                    <td className="dp-file">{it.name || "—"}</td>
 
-              <tbody>
-                {loading ? (
-                  <tr>
-                    <td colSpan="5" className="dp-empty">
-                      Đang tải dữ liệu...
-                    </td>
-                  </tr>
-                ) : filtered.length === 0 ? (
-                  <tr>
-                    <td colSpan="5" className="dp-empty">
-                      Danh sách rỗng.
-                    </td>
-                  </tr>
-                ) : (
-                  filtered.map((it) => (
-                    <tr
-                      key={it.id}
-                      className="dp-rowClickable"
-                      onClick={() => {
-                        // ✅ nếu đang chọn all -> lấy it.type_name để vào detail đúng loại
-                        const t = it.type_name || typeName;
-                        nav(`/documents/${it.id}?type=${encodeURIComponent(t)}`);
+                    {/* Type file = đuôi URL */}
+                    <td className="dp-mono">{(it.file_type || "unknown").toUpperCase()}</td>
+
+                    <td>{formatBytes(it.size_bytes)}</td>
+
+                    {/* Lần cập nhật cuối = dd/mm/yyyy */}
+                    <td className="dp-mono">{formatDateOnly(it.last_updated)}</td>
+
+                    {/* ⋯ menu */}
+                    <td
+                      className="dp-actions"
+                      onClick={(e) => {
+                        e.stopPropagation();
                       }}
                     >
-                      <td className="dp-file">{it.name || "—"}</td>
-                      <td className="dp-mono">
-                        {(it.file_type || "unknown").toUpperCase()}
-                      </td>
-                      <td>{formatBytes(it.size_bytes)}</td>
-                      <td className="dp-mono">{formatDateOnly(it.last_updated)}</td>
-
-                      {/* menu ⋯ */}
-                      <td className="dp-actions" onClick={(e) => e.stopPropagation()}>
-                        <div
-                          className="dp-menuWrap"
-                          ref={openMenuId === it.id ? menuRef : null}
+                      <div
+                        className="dp-menuWrap"
+                        ref={openMenuId === it.id ? menuRef : null}
+                      >
+                        <button
+                          className="dp-menuBtn"
+                          onClick={() => setOpenMenuId(openMenuId === it.id ? null : it.id)}
+                          aria-label="menu"
                         >
-                          <button
-                            className="dp-menuBtn"
-                            onClick={() =>
-                              setOpenMenuId(openMenuId === it.id ? null : it.id)
-                            }
-                            aria-label="menu"
-                          >
-                            ⋯
-                          </button>
+                          ⋯
+                        </button>
 
-                          {openMenuId === it.id ? (
-                            <div className="dp-menu">
-                              <button
-                                className="dp-menuItem"
-                                onClick={() => {
-                                  setOpenMenuId(null);
-                                  if (it.url)
-                                    window.open(it.url, "_blank", "noopener,noreferrer");
-                                }}
-                              >
-                                Mở file
-                              </button>
-
-                              <button
-                                className="dp-menuItem dp-menuItem--danger"
-                                onClick={() => {
-                                  setOpenMenuId(null);
-                                  alert("Chức năng xóa file: CHƯA LÀM");
-                                }}
-                              >
-                                Xóa file
-                              </button>
-                            </div>
-                          ) : null}
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                        {openMenuId === it.id ? (
+                          <div className="dp-menu">
+                            <button
+                              className="dp-menuItem"
+                              onClick={() => {
+                                setOpenMenuId(null);
+                                if (it.url) window.open(it.url, "_blank", "noopener,noreferrer");
+                              }}
+                            >
+                              Mở file
+                            </button>
+                            <button
+                              className="dp-menuItem dp-menuItem--danger"
+                              onClick={() => {
+                                setOpenMenuId(null);
+                                alert("Chức năng xóa file: CHƯA LÀM");
+                              }}
+                            >
+                              Xóa file
+                            </button>
+                          </div>
+                        ) : null}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
+    </div>
   );
 }

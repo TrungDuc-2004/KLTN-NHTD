@@ -7,7 +7,7 @@ import app.db.mongo_client as mongo_client  # ✅ import module
 
 from app.routers.auth import router as auth_router
 from app.routers.admin_minio_upload_file import router as upload_router
-from app.routers.admin_minio_list_files import router as list_files_router
+from app.routers.admin_documents import router as documents_router
 
 app = FastAPI(title="KLTN API")
 
@@ -34,7 +34,7 @@ async def on_shutdown():
 
 app.include_router(auth_router)
 app.include_router(upload_router)
-app.include_router(list_files_router)
+app.include_router(documents_router)
 
 @app.get("/")
 def root():

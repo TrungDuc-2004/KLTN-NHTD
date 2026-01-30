@@ -152,9 +152,6 @@ export default function UploadPage() {
       <header className="up-topbar">
         <div>
           <div className="up-title">Upload tài liệu</div>
-          <div className="up-sub">
-            Nhập <b>class</b>, <b>type</b>, <b>metadata</b>. URL sẽ tự được BE gắn vào Mongo.
-          </div>
         </div>
 
         <div className="up-user">
@@ -197,9 +194,6 @@ export default function UploadPage() {
             onChange={(e) => setMetadataText(e.target.value)}
             placeholder='{"lesson_id":"TH10_T1_L1","lesson_name":"Bài 1"}'
           />
-          <div className="up-help">
-            Không cần nhập <b>url</b>. BE sẽ tự thêm <b>url</b> (và {typeValue}_url) vào Mongo.
-          </div>
         </label>
 
         <label className="up-field">

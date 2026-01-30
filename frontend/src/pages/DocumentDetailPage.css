@@ -1,0 +1,101 @@
+.dd-root{
+  min-height: 100vh;
+  padding: 22px;
+  background: #f4f6fb;
+  color: #0e1a24;
+}
+
+.dd-top{
+  max-width: 1100px;
+  margin: 0 auto 14px;
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.dd-title{ font-size: 20px; font-weight: 900; color: #124874; }
+.dd-sub{ margin-top: 6px; font-size: 13px; color: rgba(14,26,36,0.65); }
+.dd-back{ color:#124874; font-weight: 900; text-decoration: none; }
+
+.dd-actions{ display:flex; gap: 10px; }
+.dd-btn{
+  border: none;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: 900;
+  color: #fff;
+  background: linear-gradient(135deg, #124874, #0f3c60);
+}
+.dd-btn:disabled{ opacity:.6; cursor:not-allowed; }
+.dd-btn--danger{ background: linear-gradient(135deg, #CF373D, #9f1f24); }
+
+.dd-grid{
+  max-width: 1100px;
+  margin: 0 auto;
+  display:grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 12px;
+}
+
+.dd-card{
+  background:#fff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.dd-card--err{
+  background: rgba(207,55,61,0.10);
+  border-color: rgba(207,55,61,0.20);
+}
+
+.dd-kv{
+  display:grid;
+  grid-template-columns: 170px 1fr;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.dd-kv:last-child{ border-bottom: none; }
+
+.dd-k{ font-size: 13px; color: rgba(14,26,36,0.65); font-weight: 900; }
+.dd-v{ font-size: 13px; color: rgba(14,26,36,0.9); word-break: break-word; }
+
+.dd-rawTitle{ margin-top: 14px; font-weight: 900; color: rgba(18,72,116,0.95); }
+.dd-raw{
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: rgba(0,0,0,0.02);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  max-height: 320px;
+  overflow:auto;
+}
+
+.dd-preview{ min-height: 520px; }
+.dd-frame{
+  margin-top: 10px;
+  width: 100%;
+  height: 560px;
+  border: 0;
+  border-radius: 12px;
+}
+.dd-img{
+  margin-top: 10px;
+  width: 100%;
+  max-height: 560px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+.dd-fallback{
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px dashed rgba(0,0,0,0.18);
+  color: rgba(14,26,36,0.7);
+}
